@@ -61,7 +61,10 @@ func TestPagerDutyRetryV2(t *testing.T) {
 
 	retryCodes := append(defaultRetryCodes(), http.StatusTooManyRequests)
 	for statusCode, expected := range retryTests(retryCodes) {
-		actual, _ := notifier.retryV2(statusCode)
+		resp := &http.Response{
+			StatusCode: statusCode,
+		}
+		actual, _ := notifier.retryV2(resp)
 		require.Equal(t, expected, actual, fmt.Sprintf("retryv2 - error on status %d", statusCode))
 	}
 }
